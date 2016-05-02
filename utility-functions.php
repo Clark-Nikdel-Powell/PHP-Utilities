@@ -109,8 +109,8 @@ final class Utility {
 	 * out markup, either from a string or a function call.
 	 *
 	 *
-	 * @param string|array $string_or_array The variable to check for data.
-	 * @param string|function $markup_or_function Markup as a string, or a 'get' function call that returns markup.
+	 * @param string|array     $string_or_array    The variable to check for data.
+	 * @param string|function  $markup_or_function Markup as a string, or a 'get' function call that returns markup.
 	 * @param array $parameters Parameters to pass into anonymous function.
 	 *
 	 * @return string  Prints out markup if check is successful.
@@ -126,16 +126,23 @@ final class Utility {
 
 		// String check
 		if ( is_string( $string_or_array ) ) {
+
 			$string_or_array = trim( $string_or_array );
+
+			if ( '' !== trim( $string_or_array ) ) {
+				$has_data = true;
+			}
 		}
 
 		// Array check
 		if ( is_array( $string_or_array ) ) {
-			$string_or_array = self::multidimensionalArrayMap( 'trim', $string_or_array );
-		}
 
-		if ( ! empty( $string_or_array ) ) {
-			$has_data = true;
+			// Trim any whitespace first
+			$string_or_array = self::multidimensionalArrayMap( 'trim', $string_or_array );
+
+			if ( ! empty( $string_or_array ) ) {
+				$has_data = true;
+			}
 		}
 
 		// @EXIT: If we don't have any data, exit the function early.
@@ -158,4 +165,5 @@ final class Utility {
 		return true;
 
 	}
+
 }
