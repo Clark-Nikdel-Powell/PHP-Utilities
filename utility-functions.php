@@ -73,7 +73,7 @@ final class Utility {
 	 *
 	 * Take a string or array of classes, trim them and then return classes as an array.
 	 *
-	 * @param string|array $classes. An array or comma-delimited string of classes.
+	 * @param string|array $classes . An array or comma-delimited string of classes.
 	 *
 	 * @return array|bool $data_classes_arr|false. Array of trimmed classes, or false if empty.
 	 */
@@ -98,5 +98,64 @@ final class Utility {
 		} else {
 			return false;
 		}
+	}
+
+
+	/**
+	 * printOnPresent
+	 *
+	 * A shorthand for checking to see if a string has data or if
+	 * an array is not empty. If successful, the function echoes
+	 * out markup, either from a string or a function call.
+	 *
+	 *
+	 * @param string|array $string_or_array The variable to check for data.
+	 * @param string|function $markup_or_function Markup as a string, or a 'get' function call that returns markup.
+	 * @param array $parameters Parameters to pass into anonymous function.
+	 *
+	 * @return string  Prints out markup if check is successful.
+	 **/
+	public static function printOnPresent( $string_or_array, $markup_or_function, $parameters = [ ] ) {
+
+		$has_data = false;
+
+		// @EXIT: If an object was supplied, return false.
+		if ( is_object( $string_or_array ) ) {
+			return false;
+		}
+
+		// String check
+		if ( is_string( $string_or_array ) ) {
+			$string_or_array = trim( $string_or_array );
+		}
+
+		// Array check
+		if ( is_array( $string_or_array ) ) {
+			$string_or_array = self::multidimensionalArrayMap( 'trim', $string_or_array );
+		}
+
+		if ( ! empty( $string_or_array ) ) {
+			$has_data = true;
+		}
+
+		// @EXIT: If we don't have any data, exit the function early.
+		if ( false === $has_data ) {
+			return false;
+		}
+
+		// If the second parameter is an anonymous function or a named function, check that
+		// the function exists before calling the function
+		if ( ( is_object( $markup_or_function ) && $markup_or_function instanceof Closure ) || function_exists( $markup_or_function ) ) {
+
+			call_user_func_array( $markup_or_function, $parameters );
+
+			return true;
+
+		}
+
+		echo $markup_or_function;
+
+		return true;
+
 	}
 }
