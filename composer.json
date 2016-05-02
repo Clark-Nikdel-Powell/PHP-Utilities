@@ -1,0 +1,19 @@
+{
+  "name": "cnp/php-utilities",
+  "description": "Generic PHP functions for standardized data manipulation.",
+  "type": "library",
+  "license": "MIT",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Clark-Nikdel-Powell/PHP-Utilities",
+  "authors": [
+    {
+      "name": "Josh Nederveld",
+      "email": "joshn@clarknikdelpowell.com",
+      "homepage": "https://clarknikdelpowell.com/agency/people/josh",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3"
+  }
+}
