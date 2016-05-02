@@ -17,7 +17,7 @@ final class Utility {
 	 * @param array $fields_names_arr An array of the fields to get.
 	 * @param bool $option Optional. Set to true if the fields are from an options page.
 	 *
-	 * @return array Data array keyed to the field names.
+	 * @return array $data_arr Data array keyed to the field names.
 	 */
 	public function getAcfFieldsAsArray( $fields_names_arr, $option ) {
 
