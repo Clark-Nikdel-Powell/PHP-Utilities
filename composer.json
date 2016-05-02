@@ -3,7 +3,6 @@
   "description": "Generic PHP functions for standardized data manipulation.",
   "type": "library",
   "license": "MIT",
-  "version": "0.2.0",
   "homepage": "https://github.com/Clark-Nikdel-Powell/PHP-Utilities",
   "authors": [
     {
