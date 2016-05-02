@@ -19,7 +19,7 @@ final class Utility {
 	 *
 	 * @return array $data_arr Data array keyed to the field names.
 	 */
-	public function getAcfFieldsAsArray( $fields_names_arr, $option ) {
+	public static function getAcfFieldsAsArray( $fields_names_arr, $option ) {
 
 		if ( ! is_array( $fields_names_arr ) || empty( $fields_names_arr ) ) {
 			return false;
@@ -50,7 +50,7 @@ final class Utility {
 	 *
 	 * @return array
 	 */
-	public function multidimensionalArrayMap( $function, $array ) {
+	public static function multidimensionalArrayMap( $function, $array ) {
 
 		$return = array();
 
