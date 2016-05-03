@@ -81,6 +81,10 @@ final class Utility {
 
 		if ( is_string( $classes ) ) {
 
+			if ( '' === $classes ) {
+				return false;
+			}
+
 			// Create an array
 			$data_classes_arr = explode( ',', $classes );
 
@@ -90,6 +94,11 @@ final class Utility {
 		}
 
 		if ( is_array( $classes ) ) {
+
+			if ( empty( $classes ) ) {
+				return false;
+			}
+
 			$data_classes_arr = $classes;
 		}
 
@@ -109,8 +118,8 @@ final class Utility {
 	 * out markup, either from a string or a function call.
 	 *
 	 *
-	 * @param string|array     $string_or_array    The variable to check for data.
-	 * @param string|function  $markup_or_function Markup as a string, or a 'get' function call that returns markup.
+	 * @param string|array $string_or_array The variable to check for data.
+	 * @param string|function $markup_or_function Markup as a string, or a 'get' function call that returns markup.
 	 * @param array $parameters Parameters to pass into anonymous function.
 	 *
 	 * @return string  Prints out markup if check is successful.
@@ -163,6 +172,88 @@ final class Utility {
 		echo $markup_or_function;
 
 		return true;
+
+	}
+
+	public static function &arrayGetPath( &$array, $path, $delimiter = null, $value = null, $unset = false ) {
+
+		$num_args = func_num_args();
+		$element  = &$array;
+
+		if ( ! is_array( $path ) && strlen( $delimiter = (string) $delimiter ) ) {
+			$path = explode( $delimiter, $path );
+		}
+
+		if ( ! is_array( $path ) ) {
+			// Exception?
+		}
+
+		while ( $path && ( $key = array_shift( $path ) ) ) {
+
+			if ( ! $path && $num_args >= 5 && $unset ) {
+				unset( $element[ $key ] );
+				unset( $element );
+				$element = null;
+			} else {
+				$element =& $element[ $key ];
+			}
+		}
+
+		if ( $num_args >= 4 && ! $unset ) {
+			$element = $value;
+		}
+
+		return $element;
+	}
+
+	public static function arraySetPath( $value, &$array, $path, $delimiter = null ) {
+		self::arrayGetPath( $array, $path, $delimiter, $value );
+
+		return;
+	}
+
+	public static function arrayUnsetPath( &$array, $path, $delimiter = null ) {
+		self::arrayGetPath( $array, $path, $delimiter, null, true );
+
+		return;
+	}
+
+	public static function arrayHasPath( $array, $path, $delimiter = null ) {
+		$has = false;
+
+		if ( ! is_array( $path ) ) {
+			$path = explode( $delimiter, $path );
+		}
+
+		foreach ( $path as $key ) {
+
+			if ( $has = array_key_exists( $key, $array ) ) {
+				$array = $array[ $key ];
+			}
+		}
+
+		return $has;
+	}
+
+	public static function setOrUnset( $string_to_check, $input_array, $key_to_unset, $key_to_set, $backup_string = '' ) {
+
+		$string_to_check = trim( $string_to_check );
+
+		// If the string is empty, we'll either clear out the array key or use a backup (read: default) string.
+		if ( '' === $string_to_check ) {
+
+			// If there's a backup, use that. Otherwise, clear out the array key.
+			if ( '' !== $backup_string ) {
+				self::arraySetPath( $backup_string, $input_array, $key_to_set );
+			} else {
+				self::arrayUnsetPath( $input_array, $key_to_unset );
+			}
+			// If the string exists, set it on the specified key.
+		} else {
+			self::arraySetPath( $string_to_check, $input_array, $key_to_set );
+		}
+
+		return $input_array;
 
 	}
 
