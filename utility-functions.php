@@ -109,6 +109,23 @@ final class Utility {
 		}
 	}
 
+	/**
+	 * getSvgIcon.
+	 *
+	 * Gets an SVG icon. This is geared toward Icomoon, whose icons don't need a viewbox attribute.
+	 * The main SVG sprite referenced by the `use` tag is loaded in the head in functions/add_svg_icon_sprite.php.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $icon_name The name of the icon
+	 * @return string SVG icon markup.
+	 */
+	public static function getSvgIcon($icon_name) {
+
+		$icon = '<svg class="icon '. $icon_name .'"><use xlink:href="#'. $icon_name .'"></use></svg>';
+		return $icon;
+	}
+
 
 	/**
 	 * printOnPresent
