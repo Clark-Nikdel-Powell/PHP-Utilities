@@ -118,14 +118,15 @@ final class Utility {
 	 * @since 1.0.0
 	 *
 	 * @param string $icon_name The name of the icon
+	 *
 	 * @return string SVG icon markup.
 	 */
-	public static function getSvgIcon($icon_name) {
+	public static function getSvgIcon( $icon_name ) {
 
-		$icon = '<svg class="icon '. $icon_name .'"><use xlink:href="#'. $icon_name .'"></use></svg>';
+		$icon = '<svg class="icon ' . $icon_name . '"><use xlink:href="#' . $icon_name . '"></use></svg>';
+
 		return $icon;
 	}
-
 
 	/**
 	 * printOnPresent
@@ -272,6 +273,30 @@ final class Utility {
 
 		return $input_array;
 
+	}
+
+	public static function getFeaturedImageIdByTerm( $term_id ) {
+		$header_bg_image_args = [
+			'numberposts' => 1,
+			'post_type'   => 'attachment',
+			'post_status' => 'any',
+			'tax_query'   => [
+				[
+					'taxonomy'         => 'media-category',
+					'field'            => 'term_id',
+					'terms'            => $term_id,
+					'include_children' => false
+				]
+			]
+		];
+
+		$header_bg_image = get_posts( $header_bg_image_args );
+
+		if ( false === $header_bg_image ) {
+			return false;
+		}
+
+		return $header_bg_image[0]->ID;
 	}
 
 }
