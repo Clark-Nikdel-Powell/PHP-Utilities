@@ -275,7 +275,7 @@ final class Utility {
 
 	}
 
-	public static function getFeaturedImageIdByTerm( $term_id ) {
+	public static function getFeaturedImageIdByTerm( $term_slug ) {
 		$header_bg_image_args = [
 			'numberposts' => 1,
 			'post_type'   => 'attachment',
@@ -283,8 +283,8 @@ final class Utility {
 			'tax_query'   => [
 				[
 					'taxonomy'         => 'media-category',
-					'field'            => 'term_id',
-					'terms'            => $term_id,
+					'field'            => 'slug',
+					'terms'            => $term_slug,
 					'include_children' => false
 				]
 			]
@@ -292,7 +292,7 @@ final class Utility {
 
 		$header_bg_image = get_posts( $header_bg_image_args );
 
-		if ( false === $header_bg_image ) {
+		if ( empty( $header_bg_image ) || false === $header_bg_image ) {
 			return false;
 		}
 
