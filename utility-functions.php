@@ -19,13 +19,13 @@ final class Utility {
 	 *
 	 * @return array $data_arr Data array keyed to the field names.
 	 */
-	public static function getAcfFieldsAsArray( $fields_names_arr, $option ) {
+	public static function get_acf_fields_as_array( $fields_names_arr, $option ) {
 
 		if ( ! is_array( $fields_names_arr ) || empty( $fields_names_arr ) ) {
 			return false;
 		}
 
-		$data_arr = [ ];
+		$data_arr = [];
 
 		$option_arg = '';
 
@@ -50,7 +50,7 @@ final class Utility {
 	 *
 	 * @return array
 	 */
-	public static function multidimensionalArrayMap( $function, $array ) {
+	public static function multidimensional_array_map( $function, $array ) {
 
 		$return = array();
 
@@ -77,7 +77,7 @@ final class Utility {
 	 *
 	 * @return array|bool $data_classes_arr|false. Array of trimmed classes, or false if empty.
 	 */
-	public static function parseClassesAsArray( $classes ) {
+	public static function parse_classes_as_array( $classes ) {
 
 		if ( is_string( $classes ) ) {
 
@@ -121,7 +121,7 @@ final class Utility {
 	 *
 	 * @return string SVG icon markup.
 	 */
-	public static function getSvgIcon( $icon_name ) {
+	public static function get_svg_icon( $icon_name ) {
 
 		$icon = '<svg class="icon ' . $icon_name . '"><use xlink:href="#' . $icon_name . '"></use></svg>';
 
@@ -142,7 +142,7 @@ final class Utility {
 	 *
 	 * @return string  Prints out markup if check is successful.
 	 **/
-	public static function printOnPresent( $string_or_array, $markup_or_function, $parameters = [ ] ) {
+	public static function print_on_present( $string_or_array, $markup_or_function, $parameters = [] ) {
 
 		$has_data = false;
 
@@ -193,7 +193,7 @@ final class Utility {
 
 	}
 
-	public static function &arrayGetPath( &$array, $path, $delimiter = null, $value = null, $unset = false ) {
+	public static function &array_get_path( &$array, $path, $delimiter = null, $value = null, $unset = false ) {
 
 		$num_args = func_num_args();
 		$element  = &$array;
@@ -224,19 +224,19 @@ final class Utility {
 		return $element;
 	}
 
-	public static function arraySetPath( $value, &$array, $path, $delimiter = null ) {
+	public static function array_set_path( $value, &$array, $path, $delimiter = null ) {
 		self::arrayGetPath( $array, $path, $delimiter, $value );
 
 		return;
 	}
 
-	public static function arrayUnsetPath( &$array, $path, $delimiter = null ) {
+	public static function array_unset_path( &$array, $path, $delimiter = null ) {
 		self::arrayGetPath( $array, $path, $delimiter, null, true );
 
 		return;
 	}
 
-	public static function arrayHasPath( $array, $path, $delimiter = null ) {
+	public static function array_has_path( $array, $path, $delimiter = null ) {
 		$has = false;
 
 		if ( ! is_array( $path ) ) {
@@ -253,7 +253,7 @@ final class Utility {
 		return $has;
 	}
 
-	public static function setOrUnset( $string_to_check, $input_array, $key_to_unset, $key_to_set, $backup_string = '' ) {
+	public static function set_or_unset( $string_to_check, $input_array, $key_to_unset, $key_to_set, $backup_string = '' ) {
 
 		$string_to_check = trim( $string_to_check );
 
@@ -275,19 +275,22 @@ final class Utility {
 
 	}
 
-	public static function getFeaturedImageIdByTerm( $term_slug ) {
+	public static function get_featured_image_id_by_term( $term_slug ) {
+
 		$header_bg_image_args = [
-			'numberposts' => 1,
-			'post_type'   => 'attachment',
-			'post_status' => 'any',
-			'tax_query'   => [
+			'numberposts'            => 1,
+			'post_type'              => 'attachment',
+			'post_status'            => 'any',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'tax_query'              => [
 				[
 					'taxonomy'         => 'media-category',
 					'field'            => 'slug',
 					'terms'            => $term_slug,
-					'include_children' => false
-				]
-			]
+					'include_children' => false,
+				],
+			],
 		];
 
 		$header_bg_image = get_posts( $header_bg_image_args );
@@ -299,4 +302,40 @@ final class Utility {
 		return $header_bg_image[0]->ID;
 	}
 
+	public static function get_classes( $raw_classes, $prefix ) {
+
+		$classes_arr = [];
+
+		// Configure the raw classes in an array
+		if ( is_string( $raw_classes ) && '' !== $raw_classes ) {
+			$classes_arr = explode( ',', $raw_classes );
+		} elseif ( is_array( $raw_classes ) && ! empty( $raw_classes ) ) {
+			$classes_arr = $raw_classes;
+		}
+
+		// Apply any filters
+		$classes_filter = $prefix . '_classes';
+		$classes_arr    = apply_filters( $classes_filter, $classes_arr );
+		Atom::add_debug_entry( 'Filter', $classes_filter );
+
+		// Sanitize each class
+		foreach ( $classes_arr as $class_index => $class ) {
+
+			$sanitized_class = sanitize_html_class( $class );
+
+			$generic_class_filter = 'cnp_modify_css_class';
+			$filtered_class       = apply_filters( $generic_class_filter, $sanitized_class, $prefix );
+			Atom::add_debug_entry( 'Filter', $prefix . ': ' . $generic_class_filter );
+
+			$classes_arr[ $class_index ] = $filtered_class;
+		}
+
+		// Filter out duplicates
+		$classes_arr = array_filter( $classes_arr );
+
+		// Convert to space-delimited string
+		$classes = implode( ' ', $classes_arr );
+
+		return $classes;
+	}
 }
