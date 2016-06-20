@@ -304,7 +304,7 @@ final class Utility {
 
 	public static function get_classes( $raw_classes, $prefix ) {
 
-		$classes_arr = [];
+		$classes_arr = array();
 
 		// Configure the raw classes in an array
 		if ( is_string( $raw_classes ) && '' !== $raw_classes ) {
@@ -337,5 +337,14 @@ final class Utility {
 		$classes = implode( ' ', $classes_arr );
 
 		return $classes;
+	}
+
+	public static function echo_classes( $raw_classes, $prefix ) {
+
+		$classes_str = Utility::get_classes( $raw_classes, $prefix );
+
+		if ( '' !== $classes_str ) {
+			echo 'class="'. $classes_str .'"';
+		}
 	}
 }
