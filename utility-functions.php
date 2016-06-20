@@ -25,7 +25,7 @@ final class Utility {
 			return false;
 		}
 
-		$data_arr = [];
+		$data_arr = [ ];
 
 		$option_arg = '';
 
@@ -142,7 +142,7 @@ final class Utility {
 	 *
 	 * @return string  Prints out markup if check is successful.
 	 **/
-	public static function print_on_present( $string_or_array, $markup_or_function, $parameters = [] ) {
+	public static function print_on_present( $string_or_array, $markup_or_function, $parameters = [ ] ) {
 
 		$has_data = false;
 
@@ -262,13 +262,13 @@ final class Utility {
 
 			// If there's a backup, use that. Otherwise, clear out the array key.
 			if ( '' !== $backup_string ) {
-				self::arraySetPath( $backup_string, $input_array, $key_to_set );
+				self::array_set_path( $backup_string, $input_array, $key_to_set );
 			} else {
-				self::arrayUnsetPath( $input_array, $key_to_unset );
+				self::array_unset_path( $input_array, $key_to_unset );
 			}
 			// If the string exists, set it on the specified key.
 		} else {
-			self::arraySetPath( $string_to_check, $input_array, $key_to_set );
+			self::array_set_path( $string_to_check, $input_array, $key_to_set );
 		}
 
 		return $input_array;
@@ -302,6 +302,19 @@ final class Utility {
 		return $header_bg_image[0]->ID;
 	}
 
+	/**
+	 * get_classes
+	 *
+	 * Sanitizes and returns the provided classes as a strong
+	 *
+	 * @param string $prefix | The prefix for filters.
+	 * @param string|array $raw_classes | The classes to check.
+	 *
+	 * @filter $classes_filter | Use this filter to adjust the atom classes array.
+	 * @filter $generic_class_filter | Use this filter to adjust individual classes.
+	 *
+	 * @return string $classes | A space-delimited string of classes.
+	 */
 	public static function get_classes( $raw_classes, $prefix ) {
 
 		$classes_arr = array();
@@ -339,12 +352,63 @@ final class Utility {
 		return $classes;
 	}
 
+	/**
+	 * echo_classes
+	 *
+	 * Uses get_classes to echo a class attribute.
+	 *
+	 * @param $raw_classes
+	 * @param $prefix
+	 *
+	 * @return string Class attribute
+	 */
 	public static function echo_classes( $raw_classes, $prefix ) {
 
 		$classes_str = Utility::get_classes( $raw_classes, $prefix );
 
 		if ( '' !== $classes_str ) {
-			echo 'class="'. $classes_str .'"';
+			echo 'class="' . $classes_str . '"';
 		}
+	}
+
+	/**
+	 * get_id
+	 *
+	 * Sanitizes and returns the provided ID.
+	 *
+	 * @see configure_atom_attributes
+	 *
+	 * @param string|array $raw_id | The ID to check.
+	 * @param string $prefix | The prefix for filters.
+	 *
+	 * @filter $atomname_id | Use this filter to adjust the atom ID string.
+	 *
+	 * @return string $id | A single ID.
+	 */
+	public static function get_id( $raw_id, $prefix ) {
+
+		/* @EXIT: sanity check */
+		if ( ! is_string( $raw_id ) || '' == $raw_id ) {
+			return false;
+		}
+
+		// Set up return variable
+		$id = '';
+
+		// Check to make sure we only have one ID.
+		$id_arr = explode( ' ', trim( $raw_id ) );
+
+		// Sanitize the first entry in the ID array.
+		if ( ! empty( $id_arr ) ) {
+			$id = sanitize_html_class( $id_arr[0] );
+		}
+
+		// Apply ID filter
+		$prefixed_id_filter = $prefix . '_id';
+		$id                 = apply_filters( $prefixed_id_filter, $id );
+		Atom::add_debug_entry( 'Filter', $prefixed_id_filter );
+
+		return $id;
+
 	}
 }
