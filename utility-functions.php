@@ -4,7 +4,7 @@ namespace CNP;
 final class Utility {
 
 	/**
-	 * getAcfFieldsAsArray.
+	 * get_acf_fields_as_array.
 	 *
 	 * Gets a bunch of specific ACF fields at once. Especially useful for option page settings, which only
 	 * have a way to get one field at a time.
@@ -41,7 +41,7 @@ final class Utility {
 	}
 
 	/**
-	 * multidimensionalArrayMap.
+	 * multidimensional_array_map.
 	 *
 	 * Like array_map, but for multidimensional arrays.
 	 *
@@ -69,7 +69,7 @@ final class Utility {
 	}
 
 	/**
-	 * parseClassesAsArray.
+	 * parse_classes_as_array.
 	 *
 	 * Take a string or array of classes, trim them and then return classes as an array.
 	 *
@@ -110,7 +110,7 @@ final class Utility {
 	}
 
 	/**
-	 * getSvgIcon.
+	 * get_svg_icon.
 	 *
 	 * Gets an SVG icon. This is geared toward Icomoon, whose icons don't need a viewbox attribute.
 	 * The main SVG sprite referenced by the `use` tag is loaded in the head in functions/add_svg_icon_sprite.php.
@@ -129,7 +129,7 @@ final class Utility {
 	}
 
 	/**
-	 * printOnPresent
+	 * print_on_present
 	 *
 	 * A shorthand for checking to see if a string has data or if
 	 * an array is not empty. If successful, the function echoes
@@ -165,7 +165,7 @@ final class Utility {
 		if ( is_array( $string_or_array ) ) {
 
 			// Trim any whitespace first
-			$string_or_array = self::multidimensionalArrayMap( 'trim', $string_or_array );
+			$string_or_array = self::multidimensional_array_map( 'trim', $string_or_array );
 
 			if ( ! empty( $string_or_array ) ) {
 				$has_data = true;
