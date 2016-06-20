@@ -57,7 +57,7 @@ final class Utility {
 		foreach ( $array as $key => $value ) {
 
 			if ( is_array( $value ) ) {
-				$formatted_value = self::MultiDimensionalArrayMap( $function, $value );
+				$formatted_value = self::multidimensional_array_map( $function, $value );
 			} else {
 				$formatted_value = $function( $value );
 			}
