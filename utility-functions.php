@@ -344,7 +344,7 @@ final class Utility {
 		}
 
 		// Filter out duplicates
-		$classes_arr = array_filter( $classes_arr );
+		$classes_arr = array_unique( $classes_arr );
 
 		// Convert to space-delimited string
 		$classes = implode( ' ', $classes_arr );
