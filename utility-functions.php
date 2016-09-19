@@ -225,13 +225,13 @@ final class Utility {
 	}
 
 	public static function array_set_path( $value, &$array, $path, $delimiter = null ) {
-		self::arrayGetPath( $array, $path, $delimiter, $value );
+		self::array_get_path( $array, $path, $delimiter, $value );
 
 		return;
 	}
 
 	public static function array_unset_path( &$array, $path, $delimiter = null ) {
-		self::arrayGetPath( $array, $path, $delimiter, null, true );
+		self::array_get_path( $array, $path, $delimiter, null, true );
 
 		return;
 	}
