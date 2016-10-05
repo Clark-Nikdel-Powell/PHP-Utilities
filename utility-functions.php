@@ -275,6 +275,46 @@ final class Utility {
 
 	}
 
+	/**
+	 * Inserts any number of scalars or arrays at the point
+	 * in the haystack immediately after the search key ($needle) was found,
+	 * or at the end if the needle is not found or not supplied.
+	 * Modifies $haystack in place.
+	 *
+	 * @param array &$haystack the associative array to search. This will be modified by the function
+	 * @param string $needle the key to search for
+	 * @param mixed $stuff one or more arrays or scalars to be inserted into $haystack
+	 *
+	 * @return array the index at which $needle was found
+	 */
+	public static function array_insert_after( &$haystack, $needle = '', $stuff ) {
+
+		if ( ! is_array( $haystack ) ) {
+			return $haystack;
+		}
+
+		$new_array = array();
+
+		// Merges all args (either strings or arrays) after haystack and needle into $new_array.
+		for ( $i = 2; $i < func_num_args(); $i ++ ) {
+			$arg = func_get_arg( $i );
+			if ( is_array( $arg ) ) {
+				$new_array = array_merge( $new_array, $arg );
+			} else {
+				$new_array[] = $arg;
+			}
+		}
+
+		$insertion_index = 0;
+		// Determine the insertion point.
+		foreach ( $haystack as $key => $value ) {
+			$insertion_index ++;
+			if ( $key == $needle ) {
+				break;
+			}
+		}
+	}
+
 	public static function get_featured_image_id_by_term( $term_slug ) {
 
 		$header_bg_image_args = [
