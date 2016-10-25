@@ -142,7 +142,7 @@ final class Utility {
 	 *
 	 * @return string  Prints out markup if check is successful.
 	 **/
-	public static function print_on_present( $string_or_array, $markup_or_function, $parameters = [ ] ) {
+	public static function print_on_present( $string_or_array, $markup_or_function, $parameters = array() ) {
 
 		$has_data = false;
 
@@ -296,7 +296,7 @@ final class Utility {
 		$new_array = array();
 
 		// Merges all args (either strings or arrays) after haystack and needle into $new_array.
-		for ( $i = 2; $i < func_num_args(); $i ++ ) {
+		for ( $i = 2; $i < func_num_args(); $i++ ) {
 			$arg = func_get_arg( $i );
 			if ( is_array( $arg ) ) {
 				$new_array = array_merge( $new_array, $arg );
@@ -308,11 +308,15 @@ final class Utility {
 		$insertion_index = 0;
 		// Determine the insertion point.
 		foreach ( $haystack as $key => $value ) {
-			$insertion_index ++;
+			$insertion_index++;
 			if ( $key == $needle ) {
 				break;
 			}
 		}
+
+		$haystack = array_merge( array_slice( $haystack, 0, $insertion_index, true ), $new_array, array_slice( $haystack, $insertion_index, null, true ) );
+
+		return $insertion_index;
 	}
 
 	public static function get_featured_image_id_by_term( $term_slug ) {
