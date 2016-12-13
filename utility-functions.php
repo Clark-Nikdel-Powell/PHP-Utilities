@@ -4,6 +4,75 @@ namespace CNP;
 final class Utility {
 
 	/**
+	 * Tests jQuery CNDs with local WordPress fallback and caches the URI.
+	 *
+	 * @since ?.?.?
+	 *
+	 * @param string $version    jQuery version to request. Default is 1.12.4.
+	 * @param int    $expiration Number of hours to cache result. Default is 4.
+	 *
+	 * @return string
+	 */
+	public static function cdn_jquery( $version = '1.12.4', $expiration = 4 ) {
+
+		$transient = 'cnp_jquery_cdn';
+
+		if ( ! $expiration ) {
+			delete_transient( $transient );
+		}
+
+		if ( false === ( $valid_cdn = get_transient( $transient ) ) ) {
+
+			$cdns = [
+				"https://ajax.googleapis.com/ajax/libs/jquery/{$version}/jquery.min.js",
+				"https://cdnjs.cloudflare.com/ajax/libs/jquery/{$version}/jquery.min.js",
+				"https://code.jquery.com/jquery-{$version}.min.js",
+				"https://ajax.aspnetcdn.com/ajax/jquery/jquery-{$version}.min.js",
+			];
+
+			/**
+			 * Filter for CDN definitions.
+			 *
+			 * @since ?.?.?
+			 *
+			 * @param array $cdns Array of jQuery CDNs.
+			 */
+			$cdns = apply_filters( 'jquery_cdns', $cdns );
+
+			$valid_cdn = includes_url( '/js/jquery/jquery.js' );
+
+			foreach ( $cdns as $cdn ) {
+				if ( ! filter_var( $cdn, FILTER_VALIDATE_URL ) ) {
+					continue;
+				}
+
+				$agent = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)';
+				$ch    = curl_init();
+				curl_setopt( $ch, CURLOPT_URL, $cdn );
+				curl_setopt( $ch, CURLOPT_USERAGENT, $agent );
+				curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+				curl_setopt( $ch, CURLOPT_VERBOSE, false );
+				curl_setopt( $ch, CURLOPT_TIMEOUT, 5 );
+				$page      = curl_exec( $ch );
+				$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+				if ( 200 === $http_code ) {
+					$valid_cdn = $cdn;
+					break;
+				} elseif ( 0 === $http_code ) {
+					echo curl_error( $ch );
+				}
+				curl_close( $ch );
+			}
+
+			if ( $expiration ) {
+				set_transient( $transient, $valid_cdn, $expiration * HOUR_IN_SECONDS );
+			}
+		}
+
+		return $valid_cdn;
+	}
+
+	/**
 	 * get_acf_fields_as_array.
 	 *
 	 * Gets a bunch of specific ACF fields at once. Especially useful for option page settings, which only
