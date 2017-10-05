@@ -1,4 +1,5 @@
 <?php
+
 namespace CNP;
 
 final class Utility {
@@ -80,11 +81,11 @@ final class Utility {
 	 *
 	 * @since 0.8.0
 	 *
-	 * @see get_field
-	 * @link https://www.advancedcustomfields.com/resources/get_field/
+	 * @see   get_field
+	 * @link  https://www.advancedcustomfields.com/resources/get_field/
 	 *
 	 * @param array $fields_names_arr An array of the fields to get.
-	 * @param bool $option Optional. Set to true if the fields are from an options page.
+	 * @param bool  $option           Optional. Set to true if the fields are from an options page.
 	 *
 	 * @return array $data_arr Data array keyed to the field names.
 	 */
@@ -94,7 +95,7 @@ final class Utility {
 			return false;
 		}
 
-		$data_arr = [ ];
+		$data_arr = [];
 
 		$option_arg = '';
 
@@ -205,9 +206,9 @@ final class Utility {
 	 * out markup, either from a string or a function call.
 	 *
 	 *
-	 * @param string|array $string_or_array The variable to check for data.
+	 * @param string|array    $string_or_array    The variable to check for data.
 	 * @param string|function $markup_or_function Markup as a string, or a 'get' function call that returns markup.
-	 * @param array $parameters Parameters to pass into anonymous function.
+	 * @param array           $parameters         Parameters to pass into anonymous function.
 	 *
 	 * @return string  Prints out markup if check is successful.
 	 **/
@@ -350,9 +351,9 @@ final class Utility {
 	 * or at the end if the needle is not found or not supplied.
 	 * Modifies $haystack in place.
 	 *
-	 * @param array &$haystack the associative array to search. This will be modified by the function
-	 * @param string $needle the key to search for
-	 * @param mixed $stuff one or more arrays or scalars to be inserted into $haystack
+	 * @param array  &$haystack the associative array to search. This will be modified by the function
+	 * @param string $needle    the key to search for
+	 * @param mixed  $stuff     one or more arrays or scalars to be inserted into $haystack
 	 *
 	 * @return array the index at which $needle was found
 	 */
@@ -365,7 +366,7 @@ final class Utility {
 		$new_array = array();
 
 		// Merges all args (either strings or arrays) after haystack and needle into $new_array.
-		for ( $i = 2; $i < func_num_args(); $i++ ) {
+		for ( $i = 2; $i < func_num_args(); $i ++ ) {
 			$arg = func_get_arg( $i );
 			if ( is_array( $arg ) ) {
 				$new_array = array_merge( $new_array, $arg );
@@ -377,13 +378,62 @@ final class Utility {
 		$insertion_index = 0;
 		// Determine the insertion point.
 		foreach ( $haystack as $key => $value ) {
-			$insertion_index++;
+			$insertion_index ++;
 			if ( $key == $needle ) {
 				break;
 			}
 		}
 
 		$haystack = array_merge( array_slice( $haystack, 0, $insertion_index, true ), $new_array, array_slice( $haystack, $insertion_index, null, true ) );
+
+		return $insertion_index;
+	}
+
+	public static function multidimensional_search( $parents, $searched ) {
+
+		if ( empty( $searched ) || empty( $parents ) ) {
+			return false;
+		}
+
+		foreach ( $parents as $key => $value ) {
+
+			$exists = true;
+
+			foreach ( $searched as $skey => $svalue ) {
+				$exists = ( $exists && isset( $parents[ $key ][ $skey ] ) && $parents[ $key ][ $skey ] == $svalue );
+			}
+
+			if ( $exists ) {
+				return $key;
+			}
+		}
+
+		return false;
+	}
+
+	public static function array_insert_after_based_on_key( &$haystack, $needle = '', $stuff ) {
+
+		if ( ! is_array( $haystack ) ) {
+			return $haystack;
+		}
+
+		$new_array = array();
+
+		// Merges all args (either strings or arrays) after haystack and needle into $new_array.
+		for ( $i = 2; $i < func_num_args(); $i ++ ) {
+			$arg = func_get_arg( $i );
+			if ( is_array( $arg ) ) {
+				$new_array = array_merge( $new_array, $arg );
+			} else {
+				$new_array[] = $arg;
+			}
+		}
+
+		$insertion_index = Utility::multidimensional_search( $haystack, $needle );
+
+		if ( false !== $insertion_index ) {
+			$haystack = array_merge( array_slice( $haystack, 0, $insertion_index, true ), $new_array, array_slice( $haystack, $insertion_index, null, true ) );
+		}
 
 		return $insertion_index;
 	}
@@ -420,7 +470,7 @@ final class Utility {
 	 *
 	 * Sanitizes and returns the provided classes as a strong
 	 *
-	 * @param string $prefix | The prefix for filters.
+	 * @param string       $prefix      | The prefix for filters.
 	 * @param string|array $raw_classes | The classes to check.
 	 *
 	 * @filter $classes_filter | Use this filter to adjust the atom classes array.
@@ -492,7 +542,7 @@ final class Utility {
 	 * @see configure_atom_attributes
 	 *
 	 * @param string|array $raw_id | The ID to check.
-	 * @param string $prefix | The prefix for filters.
+	 * @param string       $prefix | The prefix for filters.
 	 *
 	 * @filter $atomname_id | Use this filter to adjust the atom ID string.
 	 *
